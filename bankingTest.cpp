@@ -18,29 +18,27 @@ class accountCreation
     string name;
     string witness;
     string mobileNumber;
-    long long accountNumber;                       // Store the unique account number
-    static set<long long> generatedAccountNumbers; // Static set to track unique account numbers
+    long long accountNumber;
+    static set<long long> generatedAccountNumbers;
     friend class accountUpdate;
     friend class accounDeletion;
     friend class MoneyManagement;
     friend class loan;
 
 public:
-    // Constructor to initialize and generate account number
     accountCreation()
     {
         accountNumber = generateAccountNumber(12356280800000LL, 99999999999999LL);
     }
 
-    // Method to generate a random account number
     long long generateAccountNumber(long long min, long long max)
     {
         long long accountNumber;
         do
         {
-            accountNumber = rand() % (max - min + 1) + min; // Generate a random number in the range
-        } while (generatedAccountNumbers.find(accountNumber) != generatedAccountNumbers.end()); // Check for uniqueness
-        generatedAccountNumbers.insert(accountNumber); // Add to set to track uniqueness
+            accountNumber = rand() % (max - min + 1) + min;
+        } while (generatedAccountNumbers.find(accountNumber) != generatedAccountNumbers.end());
+        generatedAccountNumbers.insert(accountNumber);
         return accountNumber;
     }
 
@@ -117,7 +115,7 @@ public:
         cin >> filepath;
         cout << "Enter Your Security code : " << endl;
         cin >> security;
-        cout<<"\n";
+        cout << "\n";
         code(filepath + ".txt");
         if (security == securityCode)
         {
@@ -147,7 +145,7 @@ public:
             out << "Account Holder witness : " << witness << endl;
             out << "Mobile Number : " << mobileNumber << endl;
             out << "Bank Balance : " << deposite << endl;
-            out<< "------------------------------------------"<<endl;
+            out << "------------------------------------------" << endl;
             cout << "Details have been saved to " << name << ".txt" << endl;
             out.close();
         }
@@ -169,7 +167,7 @@ public:
         string path;
         string response;
         cout << "You cannot change the name or account number" << endl;
-        cout << "do you wish to change the mobile number ? \n Enter your security code" << endl;
+        cout << "do you wish to change the mobile number ?" << endl;
         cin >> response;
         if (response == "yes")
         {
@@ -550,7 +548,7 @@ public:
                 {
                     cout << "Logs weren't made !!";
                 }
-                
+
                 possibleTrans = true;
             }
         }
@@ -590,17 +588,40 @@ class loan : virtual public MoneyManagement, virtual public accountCreation
     int years;
     long int principal;
     float interest = float(4) / 100;
-    float return_value;
+    long int return_value;
 
 public:
+    void replace(string filename, long int newNum, long int oldNum)
+    {
+        ifstream in(filename + ".txt");
+        string fileContent = "";
+        string line;
+
+        while (getline(in, line))
+        {
+            size_t pos = 0;
+            while ((pos = line.find(to_string(oldNum), pos)) != string::npos)
+            {
+                line.replace(pos, to_string(oldNum).length(), to_string(newNum));
+                pos += to_string(newNum).length();
+            }
+
+            fileContent += line + "\n";
+        }
+        in.close();
+
+        ofstream out(filename + ".txt");
+        out << fileContent;
+        out.close();
+    }
     void applyLoan()
     {
         long int secCode;
         loanID = generateAccountNumber(149000, 149999);
         cout << "Enter your name : ";
         cin >> applier;
-        cout<<"Enter your security code :"<<endl;
-        cin>>secCode;
+        cout << "Enter your security code :" << endl;
+        cin >> secCode;
         code(applier + ".txt");
         if (secCode == securityCode)
         {
@@ -610,19 +631,19 @@ public:
             ifstream in(applier + ".txt");
             string line;
             bool wordIn = false;
-            while (getline(in, line)) 
+            while (getline(in, line))
             {
                 if (line.find("LOAN IS CURRENTLY ACTIVE") != string::npos)
                 {
                     in.close();
                     wordIn = true;
-                }            
+                }
             }
             in.close();
 
             if (wordIn == true)
             {
-                cout<<"Loan cannot be approved, Please repay the existing loan";
+                cout << "Loan cannot be approved, Please repay the existing loan";
             }
             else if (balance < 10000 | principal >= 5 * balance)
             {
@@ -647,36 +668,16 @@ public:
                     ofstream out(applier + ".txt", ios::app);
                     if (out.is_open())
                     {
-                        out << "Loan ID : "<<loanID<<endl;
+                        out << "\nLoan ID : " << loanID << endl;
                         out << "Loan Amount : " << principal << endl;
                         out << "Interest Rate : 4%" << endl;
                         out << "Repayment Peroiod (in years): " << years << endl;
                         out << "Amount Due : " << return_value << endl;
-                        out << "LOAN IS CURRENTLY ACTIVE "<<endl;
-                        
+                        out << "LOAN IS CURRENTLY ACTIVE " << endl;
                     }
 
                     long int newBalance = balance + principal;
-                    ifstream in(applier + ".txt");
-                    string fileContent = "";
-                    string line;
-
-                    while (getline(in, line))
-                    {
-                        size_t pos = 0;
-                        while ((pos = line.find(to_string(balance), pos)) != string::npos)
-                        {
-                            line.replace(pos, to_string(balance).length(), to_string(newBalance));
-                            pos += to_string(newBalance).length();
-                        }
-
-                        fileContent += line + "\n";
-                    }
-                    in.close();
-
-                    ofstream lout(applier + ".txt");
-                    lout << fileContent;
-                    lout.close();
+                    replace(applier, newBalance, balance);
                     cout << "Your bank balance is updated " << endl;
                 }
                 else
@@ -687,17 +688,18 @@ public:
         }
         else
         {
-            cout<<"WRONG PIN. CANNOT PROCEED !!"<<endl;
+            cout << "WRONG PIN. CANNOT PROCEED !!" << endl;
         }
-        
     }
 
-    void repayLoan(){
+    void repayLoan()
+    {
         long long inputLoanID;
-        float repayAmount;
+        long int repayAmount;
         string filepath;
-        cout<<"Enter your name : ";
-        cin>>filepath;
+        long int amountDue;
+        cout << "Enter your name : ";
+        cin >> filepath;
         ifstream in(filepath + ".txt");
         if (in.is_open())
         {
@@ -718,8 +720,8 @@ public:
             cout << lastReceipt << endl;
         }
 
-        cout<<"\nEnter 10-digit loan ID : "<<endl;
-        cin>>inputLoanID;
+        cout << "\nEnter 10-digit loan ID : " << endl;
+        cin >> inputLoanID;
 
         ifstream infile(filepath + ".txt");
         string line;
@@ -737,6 +739,78 @@ public:
                     found = true;
                 }
             }
+        }
+
+        if (inputLoanID == loanID)
+        {
+            cout << "Enter the amount : ";
+            cin >> repayAmount;
+
+            ifstream repay(filepath + ".txt");
+            string repayLine;
+            bool dueFound = false;
+
+            while (getline(repay, repayLine))
+            {
+                if (repayLine.find("Amount Due :") != string::npos)
+                {
+                    size_t rpos = repayLine.find(":");
+                    if (rpos != string::npos)
+                    {
+                        char *end;
+                        string amount = repayLine.substr(rpos + 1);
+                        amountDue = stol(amount);
+                        dueFound = true;
+                    }
+                }
+            }
+            long int newAmountDue = amountDue - repayAmount;
+            replace(filepath, newAmountDue, amountDue);
+            cout << "AMOUNT WAS PAID !!" << endl;
+
+            BalanceCalc(filepath + ".txt");
+            long int newDueBalance = balance - repayAmount;
+            replace(filepath, newDueBalance, balance);
+            ofstream out(filepath + "Logs.txt", ios::app);
+            if (out.is_open())
+            {
+                out << "Money Withdrawn : " << repayAmount << endl;
+            }
+            else
+            {
+                cout << "LOGS WEREN'T MADE !!" << endl;
+            }
+            reciept(filepath, balance, newDueBalance, "Withdrawn");
+
+            if (newAmountDue <= 0)
+            {
+                string oldStatus = "LOAN IS CURRENTLY ACTIVE";
+                string newStatus = "LOAN IS PAID";
+                ifstream replaceWord(filepath + ".txt");
+                string fileContent;
+                string stReplace;
+
+                while (getline(replaceWord, stReplace))
+                {
+                    size_t dpos = 0;
+                    while (dpos = stReplace.find(oldStatus, dpos) != string::npos)
+                    {
+                        stReplace.replace(dpos, oldStatus.length(), newStatus);
+                        dpos += newStatus.length();
+                    }
+                    fileContent += stReplace + "\n";
+                }
+                replaceWord.close();
+
+                ofstream coutWord(filepath + ".txt");
+                coutWord << fileContent;
+                coutWord.close();
+                cout << "LOAN IS PAID. THANK YOU " << endl;
+            }
+        }
+        else
+        {
+            cout << "INVALID LOAN ID !!" << endl;
         }
     }
 };
