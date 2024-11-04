@@ -139,13 +139,32 @@ public:
         ofstream out(name + ".txt", ios::app);
         if (out.is_open())
         {
+            out << "==============================" << endl;
+            out << "     SHAMPI BANK OF INDIA     " << endl;
+            out << "==============================\n"
+                << endl;
+            out << "-------------------------" << endl;
+            out << "     ACCOUNT SUMMARY     " << endl;
+            out << "-------------------------" << endl;
             out << "Account Number : " << accountNumber << endl;
             out << "Account Holder : " << name << endl;
-            out << "Security Code : " << securityCode << endl;
             out << "Account Holder witness : " << witness << endl;
-            out << "Mobile Number : " << mobileNumber << endl;
-            out << "Bank Balance : " << deposite << endl;
-            out << "------------------------------------------" << endl;
+            out << "Status : Active" << endl
+                << endl;
+            out << "-------------------------" << endl;
+            out << "         SECURITY        " << endl;
+            out << "-------------------------" << endl;
+            out << "Security Code : " << securityCode << endl;
+            out << "Mobile Number : " << mobileNumber << endl
+                << endl;
+            out << "-------------------------" << endl;
+            out << "         BALANCE         " << endl;
+            out << "-------------------------" << endl;
+            out << "Bank Balance : " << deposite << endl
+                << endl;
+            out << "-------------------------" << endl;
+            out << "           EXIT          " << endl;
+            out << "-------------------------" << endl;
             cout << "Details have been saved to " << name << ".txt" << endl;
             out.close();
         }
@@ -248,6 +267,40 @@ class MoneyManagement : virtual public accountCreation
     friend class loan;
 
 public:
+    void generateLogs(string filepath, string situation, long int amount, long int balance)
+    {
+        bool isNewFile = false;
+        ifstream checkfile(filepath + "Logs.txt");
+        if (checkfile.is_open())
+        {
+            isNewFile = true;
+        }
+
+        ofstream writeLogs(filepath + "Logs.txt", ios::app);
+        if (writeLogs.is_open())
+        {
+            if (isNewFile == false)
+            {
+                writeLogs << "=================================================" << endl;
+                writeLogs << "               TRANSACTION HISTORY               " << endl;
+                writeLogs << "=================================================\n"
+                          << endl;
+                writeLogs << "TRANSACTION        ";
+                writeLogs << "AMOUNT             ";
+                writeLogs << "BALANCE            " << endl;
+                writeLogs << "-------------------------------------------------" << endl;
+            }
+
+            writeLogs << situation;
+            writeLogs << "           " << amount;
+            writeLogs << "               " << balance << endl;
+        }
+        else
+        {
+            cout << "LOGS ARE NOT MADE !!" << endl;
+        }
+    }
+
     void reciept(string name, long int accBalance, long int currBalance, string situation)
     {
         string recieptFile = name + "Reciept" + ".txt";
@@ -290,8 +343,9 @@ public:
             in.close();
 
             // Display the last receipt
-            cout << "\n--------------Your New Receipt--------------" << endl;
-            cout << lastReceipt << endl;
+            cout << "\n--------------RECEIPT--------------" << endl;
+            cout << lastReceipt;
+            cout << "--------------RECEIPT--------------" << endl;
         }
     }
 
@@ -313,42 +367,10 @@ public:
                 BalanceCalc(filepath + ".txt");
 
                 long int newBalance = balance + deposite;
-                ifstream in(filepath + ".txt");
-                string fileContent = "";
-                string line;
-
-                while (getline(in, line))
-                {
-                    size_t pos = 0;
-                    while ((pos = line.find(to_string(balance), pos)) != string::npos)
-                    {
-                        line.replace(pos, to_string(balance).length(), to_string(newBalance));
-                        pos += to_string(newBalance).length();
-                    }
-
-                    fileContent += line + "\n";
-                }
-                in.close();
-
-                ofstream out(filepath + ".txt");
-                out << fileContent;
-                out.close();
-                cout << "Money deposited";
-
-                string logsFilePath = filepath + "Logs.txt";
-
-                ofstream logs(logsFilePath, ios::app);
-                if (logs.is_open())
-                {
-                    logs << "Money deposited : " << deposite << endl;
-                    out.close();
-                }
-                else
-                {
-                    cout << "Logs weren't made !!";
-                }
-
+                replace(filepath, newBalance, balance);
+                generateLogs(filepath, "Deposited", deposite, newBalance);
                 reciept(filepath, deposite, newBalance, "deposited");
+                cout << "\nMONEY DEPOSITED !!";
             }
             else
             {
@@ -382,42 +404,10 @@ public:
             else
             {
                 long int newBalance = balance - withdrawal;
-
-                ifstream in(filepath + ".txt");
-                string fileContent = "";
-                string line;
-
-                while (getline(in, line))
-                {
-                    size_t pos = 0;
-                    while ((pos = line.find(to_string(balance), pos)) != string::npos)
-                    {
-                        line.replace(pos, to_string(balance).length(), to_string(newBalance));
-                        pos += to_string(newBalance).length();
-                    }
-
-                    fileContent += line + "\n";
-                }
-                in.close();
-
-                ofstream out(filepath + ".txt");
-                out << fileContent;
-                out.close();
-                cout << "Money Withdrawn, Balance updated !!";
-
-                string logsFilePath = filepath + "Logs.txt";
-
-                ofstream logs(logsFilePath, ios::app);
-                if (logs.is_open())
-                {
-                    logs << "Money withdrawn : " << withdrawal << endl;
-                    out.close();
-                }
-                else
-                {
-                    cout << "Logs weren't made !!";
-                }
+                replace(filepath, newBalance, balance);
+                generateLogs(filepath, "Withdrawn", withdrawal, newBalance);
                 reciept(filepath, withdrawal, newBalance, "withdrawn");
+                cout << "\nMONEY WITHDRAWN !!"<<endl;
             }
         }
         else
@@ -437,8 +427,7 @@ public:
         string st;
         if (in.is_open())
         {
-            cout << endl
-                 << "---------------TRANSACTION HISTORY---------------" << endl;
+
             while (in.eof() == 0)
             {
                 getline(in, st);
@@ -458,8 +447,7 @@ public:
         string recieversPath;
         long int secCode;
         long int transaction;
-        cout << endl
-             << "Enter the sender's name : ";
+        cout << "Enter the sender's name : ";
         cin >> sendersPath;
         cout << "Enter the reciever's name : ";
         cin >> recieversPath;
@@ -482,72 +470,14 @@ public:
                 else
                 {
                     long int newBalance = balance - transaction;
-
-                    ifstream in(sendersPath + ".txt");
-                    string fileContent = "";
-                    string line;
-
-                    while (getline(in, line))
-                    {
-                        size_t pos = 0;
-                        while ((pos = line.find(to_string(balance), pos)) != string::npos)
-                        {
-                            line.replace(pos, to_string(balance).length(), to_string(newBalance));
-                            pos += to_string(newBalance).length();
-                        }
-
-                        fileContent += line + "\n";
-                    }
-                    in.close();
-
-                    ofstream out(sendersPath + ".txt");
-                    out << fileContent;
-                    out.close();
-
-                    ofstream logs(sendersPath + "Logs.txt", ios::app);
-                    if (logs.is_open())
-                    {
-                        logs << "Money transfered : " << transaction << "  | From " << sendersPath << " to " << recieversPath << "  |" << endl;
-                        out.close();
-                    }
-                    else
-                    {
-                        cout << "Logs weren't made !!";
-                    }
+                    replace(sendersPath, newBalance, balance);
+                    generateLogs(sendersPath, "to " + recieversPath, transaction, newBalance);
                     reciept(sendersPath, transaction, newBalance, "Withdrawn");
                 }
                 BalanceCalc(recieversPath + ".txt");
-
                 long int recieverNewBalance = balance + transaction;
-                ifstream reciever(recieversPath + ".txt");
-                string recieverContent = "";
-                string rVar;
-
-                while (getline(reciever, rVar))
-                {
-                    size_t rpos = 0;
-                    while ((rpos = rVar.find(to_string(balance), rpos)) != string::npos)
-                    {
-                        rVar.replace(rpos, to_string(balance).length(), to_string(recieverNewBalance));
-                        rpos += to_string(recieverNewBalance).length();
-                    }
-                    recieverContent += rVar + "\n";
-                }
-                reciever.close();
-
-                ofstream rOut(recieversPath + ".txt");
-                rOut << recieverContent;
-                rOut.close();
-
-                ofstream rLogs(recieversPath + "Logs.txt", ios::app);
-                if (rLogs.is_open())
-                {
-                    rLogs << "Money Recieved : " << transaction << "   |  From " << sendersPath << " to " << recieversPath << "  |" << endl;
-                }
-                else
-                {
-                    cout << "Logs weren't made !!";
-                }
+                replace(recieversPath, recieverNewBalance, balance);
+                generateLogs(recieversPath, "from " + sendersPath, transaction, recieverNewBalance);
 
                 possibleTrans = true;
             }
@@ -578,19 +508,7 @@ public:
             }
         }
     }
-};
-
-class loan : virtual public MoneyManagement, virtual public accountCreation
-{
-    string applier;
-    long long loanID;
-    string choice;
-    int years;
-    long int principal;
-    float interest = float(4) / 100;
-    long int return_value;
-
-public:
+    
     void replace(string filename, long int newNum, long int oldNum)
     {
         ifstream in(filename + ".txt");
@@ -614,6 +532,19 @@ public:
         out << fileContent;
         out.close();
     }
+};
+
+class loan : virtual public MoneyManagement, virtual public accountCreation
+{
+    string applier;
+    long long loanID;
+    string choice;
+    int years;
+    long int principal;
+    float interest = float(4) / 100;
+    long int return_value;
+
+public:
     void applyLoan()
     {
         long int secCode;
@@ -628,7 +559,7 @@ public:
             cout << "Enter your loan amount :";
             cin >> principal;
             BalanceCalc(applier + ".txt");
-            ifstream in(applier + ".txt");
+            ifstream in(applier + "Loans.txt");
             string line;
             bool wordIn = false;
             while (getline(in, line))
@@ -665,7 +596,7 @@ public:
                 cin >> choice;
                 if (choice == "yes")
                 {
-                    ofstream out(applier + ".txt", ios::app);
+                    ofstream out(applier + "Loans.txt", ios::app);
                     if (out.is_open())
                     {
                         out << "\nLoan ID : " << loanID << endl;
@@ -678,7 +609,9 @@ public:
 
                     long int newBalance = balance + principal;
                     replace(applier, newBalance, balance);
+                    cout << "LOAN APPROVED !!" << endl;
                     cout << "Your bank balance is updated " << endl;
+                    generateLogs(applier, "Deposited", return_value, newBalance);
                 }
                 else
                 {
@@ -700,7 +633,7 @@ public:
         long int amountDue;
         cout << "Enter your name : ";
         cin >> filepath;
-        ifstream in(filepath + ".txt");
+        ifstream in(filepath + "Loans.txt");
         if (in.is_open())
         {
             string st, lastReceipt = "";
@@ -720,10 +653,10 @@ public:
             cout << lastReceipt << endl;
         }
 
-        cout << "\nEnter 10-digit loan ID : " << endl;
+        cout << "\nEnter 6-digit loan ID : " << endl;
         cin >> inputLoanID;
 
-        ifstream infile(filepath + ".txt");
+        ifstream infile(filepath + "Loans.txt");
         string line;
         bool found = false;
 
@@ -746,7 +679,7 @@ public:
             cout << "Enter the amount : ";
             cin >> repayAmount;
 
-            ifstream repay(filepath + ".txt");
+            ifstream repay(filepath + "Loans.txt");
             string repayLine;
             bool dueFound = false;
 
@@ -765,28 +698,20 @@ public:
                 }
             }
             long int newAmountDue = amountDue - repayAmount;
-            replace(filepath, newAmountDue, amountDue);
+            replace(filepath + "Loans", newAmountDue, amountDue);
             cout << "AMOUNT WAS PAID !!" << endl;
 
             BalanceCalc(filepath + ".txt");
             long int newDueBalance = balance - repayAmount;
             replace(filepath, newDueBalance, balance);
-            ofstream out(filepath + "Logs.txt", ios::app);
-            if (out.is_open())
-            {
-                out << "Money Withdrawn : " << repayAmount << endl;
-            }
-            else
-            {
-                cout << "LOGS WEREN'T MADE !!" << endl;
-            }
+            generateLogs(filepath, "Withdrawn", repayAmount, newDueBalance);
             reciept(filepath, balance, newDueBalance, "Withdrawn");
 
             if (newAmountDue <= 0)
             {
                 string oldStatus = "LOAN IS CURRENTLY ACTIVE";
                 string newStatus = "LOAN IS PAID";
-                ifstream replaceWord(filepath + ".txt");
+                ifstream replaceWord(filepath + "Loans.txt");
                 string fileContent;
                 string stReplace;
 
@@ -802,7 +727,7 @@ public:
                 }
                 replaceWord.close();
 
-                ofstream coutWord(filepath + ".txt");
+                ofstream coutWord(filepath + "Loans.txt");
                 coutWord << fileContent;
                 coutWord.close();
                 cout << "LOAN IS PAID. THANK YOU " << endl;
@@ -831,14 +756,17 @@ int main()
     int choice = 0;
     while (choice != 4)
     {
-        cout << "\n|------WELCOME TO SHAMPOO BANK OF INDIA-----|" << endl;
-        cout << "| 1. Account Management                      |" << endl;
-        cout << "| 2. Money Management                        |" << endl;
-        cout << "| 3. Loan Check                              |" << endl;
-        cout << "| 4. Exit                                    |" << endl;
+        cout << "\n|============================================|" << endl;
+        cout << "|            SHAMPI BANK OF INDIA            |" << endl;
+        cout << "|============================================|" << endl;
+        cout << "| 1.|  Account Management                    |" << endl;
+        cout << "| 2.|  Money Management                      |" << endl;
+        cout << "| 3.|  Loan Check                            |" << endl;
+        cout << "| 4.|  Exit                                  |" << endl;
+        cout << "|============================================|" << endl;
         cout << "| Enter your choice : ";
         cin >> choice;
-        cout << "|--------------------------------------------|" << endl;
+        cout << "|============================================|" << endl;
 
         if (choice == 1)
         {
@@ -850,7 +778,7 @@ int main()
                 cout << "2. Show Details" << endl;
                 cout << "3. Update Details" << endl;
                 cout << "4. Delete Account" << endl;
-                cout << "5. Exit" << endl;
+                cout << "5. Home" << endl;
                 cout << "Enter your choice :" << endl;
                 cin >> accManage;
                 cout << "\n";
@@ -890,7 +818,7 @@ int main()
                 cout << "2. Withdraw" << endl;
                 cout << "3. Transfer" << endl;
                 cout << "4. Show Logs" << endl;
-                cout << "5. Exit" << endl;
+                cout << "5. Home" << endl;
                 cout << "Enter your choice :" << endl;
                 cin >> moneyManage;
 
