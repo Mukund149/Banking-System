@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <cstdio>
-#include <cstdlib> // for rand() and srand()
+#include <cstdlib> // for rand() and srand() and system("cls")
 #include <ctime>   // for time()
 #include <set>     // for std::set to track unique account numbers
 #include <string>
@@ -66,14 +66,14 @@ public:
     void createAccount()
     {
         cout << "Enter the details carefully !!" << endl;
-        cout << "Enter your name: ";
+        cout << "ENTER YOUR NAME : ";
         cin >> name;
-        cout << "Enter witness name: ";
+        cout << "ENTER WITNESS NAME : ";
         cin >> witness;
         bool validNum = false;
         while (!validNum)
         {
-            cout << "Enter mobile number :";
+            cout << "ENTER MOBILE NUMBER : ";
             cin >> mobileNumber;
 
             if (mobileNumber.length() == 10)
@@ -88,7 +88,7 @@ public:
         bool validCode = false;
         while (!validCode)
         {
-            cout << "Enter a 4-digit security code :";
+            cout << "ENTER 4-DIGIT SECURITY PIN : ";
             cin >> securityCode;
 
             if (to_string(securityCode).length() == 4)
@@ -101,7 +101,7 @@ public:
             }
         }
 
-        cout << "Enter the amount to be added : " << endl;
+        cout << "ENTER THE AMOUNT : " << endl;
         cin >> deposite;
 
         saveDetails();
@@ -121,12 +121,20 @@ public:
         {
             ifstream in(filepath + ".txt");
             string st;
+            if(in.is_open())
+            {
             while (in.eof() == 0)
             {
                 getline(in, st);
                 cout << st << endl;
             }
             in.close();
+            }
+            else
+            {
+                cout<<"NO SUCH ACCOUNT WAS FOUND !!"<<endl;
+            }
+            
         }
         else
         {
@@ -234,27 +242,41 @@ public:
     {
         string filepath;
         long int seccode;
+        string response;
         cout << "What is your name : ";
         cin >> filepath;
         cout << "Enter your security code :";
         cin >> seccode;
-        code(filepath + ".txt");
-        if (seccode == securityCode)
+        cout<<"ARE YOU SURE YOU WANT TO DELETE YOUR ACCOUNT ? (yes/no) : "<<endl;
+        cin>>response;
+        if (response == "yes")
         {
-            filepath += ".txt";
-            if (remove(filepath.c_str()) == 0)
+            code(filepath + ".txt");
+            if (seccode == securityCode)
             {
-                cout << "Account deleted successfully";
+                filepath += ".txt";
+                if (remove(filepath.c_str()) == 0)
+                {
+                    cout << "ACCOUNT DELETED SUCCESSFULLY";
+                }
+                else
+                {
+                    cout << "Error deleting, TRY AGAIN LATER" << endl;
+                }
             }
             else
             {
-                cout << "Error deleting, TRY AGAIN LATER" << endl;
+                cout << "WRONG PIN !!" << endl;
             }
+        }
+        else if (response == "no")
+        {
+            cout<<"OK SIR..."<<endl;
         }
         else
         {
-            cout << "WRONG PIN !!" << endl;
-        }
+            cout<<"INVALID RESPONSE !!"<<endl;
+        } 
     }
 };
 
@@ -347,6 +369,51 @@ public:
             cout << lastReceipt;
             cout << "--------------RECEIPT--------------" << endl;
         }
+    }
+
+    void BalanceCalc(string filename)
+    {
+        ifstream infile(filename);
+        string line;
+        bool found = false;
+
+        while (getline(infile, line))
+        {
+            if (line.find("Bank Balance :") != string::npos)
+            {
+                size_t pos = line.find(':');
+                if (pos != string::npos)
+                {
+                    string User_balance = line.substr(pos + 1);
+                    balance = stol(User_balance);
+                    found = true;
+                }
+            }
+        }
+    }
+    
+    void replace(string filename, long int newNum, long int oldNum)
+    {
+        ifstream in(filename + ".txt");
+        string fileContent = "";
+        string line;
+
+        while (getline(in, line))
+        {
+            size_t pos = 0;
+            while ((pos = line.find(to_string(oldNum), pos)) != string::npos)
+            {
+                line.replace(pos, to_string(oldNum).length(), to_string(newNum));
+                pos += to_string(newNum).length();
+            }
+
+            fileContent += line + "\n";
+        }
+        in.close();
+
+        ofstream out(filename + ".txt");
+        out << fileContent;
+        out.close();
     }
 
     void moneyDeposite()
@@ -488,50 +555,6 @@ public:
         }
     }
 
-    void BalanceCalc(string filename)
-    {
-        ifstream infile(filename);
-        string line;
-        bool found = false;
-
-        while (getline(infile, line))
-        {
-            if (line.find("Bank Balance :") != string::npos)
-            {
-                size_t pos = line.find(':');
-                if (pos != string::npos)
-                {
-                    string User_balance = line.substr(pos + 1);
-                    balance = stol(User_balance);
-                    found = true;
-                }
-            }
-        }
-    }
-    
-    void replace(string filename, long int newNum, long int oldNum)
-    {
-        ifstream in(filename + ".txt");
-        string fileContent = "";
-        string line;
-
-        while (getline(in, line))
-        {
-            size_t pos = 0;
-            while ((pos = line.find(to_string(oldNum), pos)) != string::npos)
-            {
-                line.replace(pos, to_string(oldNum).length(), to_string(newNum));
-                pos += to_string(newNum).length();
-            }
-
-            fileContent += line + "\n";
-        }
-        in.close();
-
-        ofstream out(filename + ".txt");
-        out << fileContent;
-        out.close();
-    }
 };
 
 class loan : virtual public MoneyManagement, virtual public accountCreation
@@ -746,6 +769,23 @@ class accountManagement : public accountUpdate, public accounDeletion, public lo
 
 set<long long> accountCreation::generatedAccountNumbers;
 
+void closeMenu(int var){
+    var = 0;
+    cout<<"\nPress 1 to close "<<endl;
+    while (var != 1)
+    {
+        cin>>var;
+        if (var == 1)
+        {
+            break;
+        }
+        else
+        {
+            cout<<"Invalid input"<<endl;
+        } 
+    }
+}
+
 int main()
 {
     // Seed the random number generator with the current time
@@ -756,6 +796,7 @@ int main()
     int choice = 0;
     while (choice != 4)
     {
+        system("cls");
         cout << "\n|============================================|" << endl;
         cout << "|            SHAMPI BANK OF INDIA            |" << endl;
         cout << "|============================================|" << endl;
@@ -770,36 +811,58 @@ int main()
 
         if (choice == 1)
         {
+            int accPage;
             int accManage = 0;
+            int back = 0;
             while (accManage != 5)
             {
-                cout << "\n--- ACCOUNT MANAGEMENT ---" << endl;
-                cout << "1. Create Account" << endl;
-                cout << "2. Show Details" << endl;
-                cout << "3. Update Details" << endl;
-                cout << "4. Delete Account" << endl;
-                cout << "5. Home" << endl;
-                cout << "Enter your choice :" << endl;
+                system("cls");
+                cout << "|===========================|" << endl;
+                cout << "|     ACCOUNT MANAGEMENT    |" << endl;
+                cout << "|===========================|" << endl;
+                cout << "|1.| Create Account         |" << endl;
+                cout << "|2.| Show Details           |" << endl;
+                cout << "|3.| Update Details         |" << endl;
+                cout << "|4.| Delete Account         |" << endl;
+                cout << "|5.| Home                   |" << endl;
+                cout << "|===========================|"<<endl;
+                cout << "|Enter your choice : ";
                 cin >> accManage;
                 cout << "\n";
                 switch (accManage)
                 {
                 case 1:
+                    system("cls");
+                    cout<<"=========================="<<endl;
+                    cout<<"     ACCOUNT CREATION     "<<endl;
+                    cout<<"==========================\n"<<endl;
                     p1.createAccount();
+                    closeMenu(accPage);
                     break;
-
                 case 2:
+                    system("cls");
+                    cout<<"======================"<<endl;
+                    cout<<"     SHOW DETAILS     "<<endl;
+                    cout<<"======================\n"<<endl;
                     p1.showDetails();
+                    closeMenu(accPage);
                     break;
-
                 case 3:
+                    system("cls");
+                    cout<<"========================"<<endl;
+                    cout<<"     UPDATE DETAILS     "<<endl;
+                    cout<<"========================\n"<<endl;
                     p1.updateDetails();
+                    closeMenu(accPage);
                     break;
-
                 case 4:
+                    system("cls");
+                    cout<<"========================"<<endl;
+                    cout<<"     DELETE ACCOUNT     "<<endl;
+                    cout<<"========================\n"<<endl;
                     p1.deleteAccount();
+                    closeMenu(accPage);
                     break;
-
                 case 5:
                     break;
 
@@ -810,34 +873,59 @@ int main()
         }
         else if (choice == 2)
         {
+            int moneyPage;
             int moneyManage = 0;
             while (moneyManage != 5)
             {
-                cout << "\n--- MONEY MANAGEMENT ---" << endl;
-                cout << "1. Deposite" << endl;
-                cout << "2. Withdraw" << endl;
-                cout << "3. Transfer" << endl;
-                cout << "4. Show Logs" << endl;
-                cout << "5. Home" << endl;
-                cout << "Enter your choice :" << endl;
+                system("cls");
+                cout << "|==========================|" <<endl;
+                cout << "|     MONEY MANAGEMENT     |" << endl;
+                cout << "|==========================|" <<endl;
+                cout << "|1.| Deposite              |" << endl;
+                cout << "|2.| Withdraw              |" << endl;
+                cout << "|3.| Transfer              |" << endl;
+                cout << "|4.| Show Logs             |" << endl;
+                cout << "|5.| Home                  |" << endl;
+                cout << "|==========================|"<<endl;
+                cout << "|Enter your choice : ";
                 cin >> moneyManage;
 
                 switch (moneyManage)
                 {
                 case 1:
+                    system("cls");
+                    cout<<"================="<<endl;
+                    cout<<"     DEPOSIT     "<<endl;
+                    cout<<"=================\n"<<endl;
                     p1.moneyDeposite();
+                    closeMenu(moneyPage);
                     break;
 
                 case 2:
+                    system("cls");
+                    cout<<"=================="<<endl;
+                    cout<<"     WITHDRAW     "<<endl;
+                    cout<<"==================\n"<<endl;
                     p1.withdrawMoney();
+                    closeMenu(moneyPage);
                     break;
 
                 case 3:
+                    system("cls");
+                    cout<<"====================="<<endl;
+                    cout<<"     TRANSACTION     "<<endl;
+                    cout<<"=====================\n"<<endl;
                     p1.transaction();
+                    closeMenu(moneyPage);
                     break;
 
                 case 4:
+                    system("cls");
+                    cout<<"=============="<<endl;
+                    cout<<"     LOGS     "<<endl;
+                    cout<<"==============\n"<<endl;
                     p1.showLogs();
+                    closeMenu(moneyPage);
                     break;
 
                 case 5:
@@ -850,23 +938,39 @@ int main()
         }
         else if (choice == 3)
         {
+            int loanPage;
             int loanCheck = 0;
             while (loanCheck != 3)
             {
-                cout << "\n--- LOAN CHECK ---" << endl;
-                cout << "1. Apply for loan" << endl;
-                cout << "2. Repay Loan" << endl;
-                cout << "3. Exit" << endl;
-                cout << "Enter your choice :" << endl;
+                system("cls");
+                cout << "|========================|" <<endl;
+                cout << "|       LOAN CHECK       |" << endl;
+                cout << "|========================|" <<endl;
+                cout << "|1.| Apply for loan      |" << endl;
+                cout << "|2.| Repay Loan          |" << endl;
+                cout << "|3.| Home                |" << endl;
+                cout << "|========================|"<<endl;
+                cout << "|Enter your choice : ";
                 cin >> loanCheck;
                 switch (loanCheck)
                 {
                 case 1:
+                    system("cls");
+                    cout<<"====================="<<endl;
+                    cout<<"     APPLICATION     "<<endl;
+                    cout<<"=====================\n"<<endl;
                     p1.applyLoan();
+                    closeMenu(loanPage);
                     break;
 
                 case 2:
+                    system("cls");
+                    cout<<"==================="<<endl;
+                    cout<<"     REPAYMENT     "<<endl;
+                    cout<<"===================\n"<<endl;
                     p1.repayLoan();
+                    closeMenu(loanPage);
+                    break;
 
                 case 3:
                     break;
@@ -878,7 +982,9 @@ int main()
         }
         else if (choice == 4)
         {
-            cout << "Exiting...." << endl;
+            cout << "|============================================|" << endl;
+            cout << "|       THANK YOU FOR BANKING WITH US        |" << endl;
+            cout << "|============================================|" << endl;
         }
         else
         {
