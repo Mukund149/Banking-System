@@ -6,10 +6,26 @@
 #include <ctime>   // for time()
 #include <set>     // for std::set to track unique account numbers
 #include <string>
+#include<windows.h>
 
 using namespace std;
 
 class accountUpdate;
+
+void loadingScr(){
+    system("cls");
+    cout<<"Hang Tight"<<endl;
+    string arr[10] = {"L", "o", "a", "d", "i", "n", "g", ".", ".", "."};
+    int size = 10;
+    Sleep(200);
+    for (int i = 0; i < size; i++)
+    {
+        cout<<arr[i];
+        Sleep(200);
+    }
+    Sleep(100); 
+    system("cls");
+}
 
 class accountCreation
 {
@@ -103,7 +119,7 @@ public:
 
         cout << "ENTER THE AMOUNT : " << endl;
         cin >> deposite;
-
+        loadingScr();
         saveDetails();
     }
 
@@ -117,6 +133,7 @@ public:
         cin >> security;
         cout << "\n";
         code(filepath + ".txt");
+        loadingScr();
         if (security == securityCode)
         {
             ifstream in(filepath + ".txt");
@@ -204,7 +221,7 @@ public:
             cin >> oldNumber;
             cout << "Enter your new number : ";
             cin >> newMobile;
-
+            loadingScr();
             ifstream file(path + ".txt");
             string line;
 
@@ -251,6 +268,7 @@ public:
         cin>>response;
         if (response == "yes")
         {
+            loadingScr();
             code(filepath + ".txt");
             if (seccode == securityCode)
             {
@@ -432,6 +450,7 @@ public:
             if (deposite < 30000)
             {
                 BalanceCalc(filepath + ".txt");
+                loadingScr();
 
                 long int newBalance = balance + deposite;
                 replace(filepath, newBalance, balance);
@@ -472,6 +491,7 @@ public:
             {
                 long int newBalance = balance - withdrawal;
                 replace(filepath, newBalance, balance);
+                loadingScr();
                 generateLogs(filepath, "Withdrawn", withdrawal, newBalance);
                 reciept(filepath, withdrawal, newBalance, "withdrawn");
                 cout << "\nMONEY WITHDRAWN !!"<<endl;
@@ -489,6 +509,7 @@ public:
         cout << endl
              << "Enter your name : ";
         cin >> path;
+        loadingScr();
         string filepath = path + "Logs" + ".txt";
         ifstream in(filepath);
         string st;
@@ -538,6 +559,7 @@ public:
                 {
                     long int newBalance = balance - transaction;
                     replace(sendersPath, newBalance, balance);
+                    loadingScr();
                     generateLogs(sendersPath, "to " + recieversPath, transaction, newBalance);
                     reciept(sendersPath, transaction, newBalance, "Withdrawn");
                 }
@@ -606,6 +628,8 @@ public:
             else
             {
                 return_value = principal;
+                loadingScr();
+                cout << "Principal Amount : "<< principal<<endl;
                 cout << "Interest rate offered : 4% " << endl;
                 cout << "Loan term duration : ";
                 cin >> years;
@@ -817,7 +841,7 @@ int main()
             while (accManage != 5)
             {
                 system("cls");
-                cout << "|===========================|" << endl;
+                cout << "\n|===========================|" << endl;
                 cout << "|     ACCOUNT MANAGEMENT    |" << endl;
                 cout << "|===========================|" << endl;
                 cout << "|1.| Create Account         |" << endl;
