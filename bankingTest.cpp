@@ -42,7 +42,7 @@ class accountCreation
 {
     long int securityCode;
     long int deposite;
-    string name;
+    string accHolder;
     string witness;
     long long mobileNumber;
     long long accountNumber;
@@ -75,6 +75,7 @@ void validName(string name ){
 
         if (checkValidName == 0)
         {
+            accHolder = name;
             validname = true;
         }
         else{
@@ -122,7 +123,7 @@ void validName(string name ){
     void createAccount()
     {
         cout << "Enter the details carefully !!" << endl;
-        validName(name);
+        validName(accHolder);
         bool validNum = false;
         while (!validNum)
         {
@@ -210,7 +211,7 @@ void validName(string name ){
 
     void saveDetails()
     {
-        ofstream out(name + ".txt", ios::app);
+        ofstream out(accHolder + ".txt", ios::app);
         if (out.is_open())
         {
             out << "==============================" << endl;
@@ -221,8 +222,7 @@ void validName(string name ){
             out << "     ACCOUNT SUMMARY     " << endl;
             out << "-------------------------" << endl;
             out << "Account Number : " << accountNumber << endl;
-            out << "Account Holder : " << name << endl;
-            out << "Account Holder witness : " << witness << endl;
+            out << "Account Holder : " << accHolder << endl;
             out << "Status : Active" << endl
                 << endl;
             out << "-------------------------" << endl;
@@ -239,7 +239,7 @@ void validName(string name ){
             out << "-------------------------" << endl;
             out << "           EXIT          " << endl;
             out << "-------------------------" << endl;
-            cout << "Details have been saved to " << name << ".txt" << endl;
+            cout << "Details have been saved to " << accHolder << ".txt" << endl;
             out.close();
         }
         else
@@ -284,7 +284,6 @@ public:
                     line.replace(pos, oldNumber.length(), newMobile);
                     pos += newMobile.length();
                 }
-
                 newNumber += line + "\n";
             }
             file.close();
@@ -923,7 +922,7 @@ int main()
     srand(static_cast<unsigned>(time(0)));
     // Seed the random number generator with the current time
 
-    accountManagement p1, p2;
+    accountManagement p1;
     int choice = 0;
     while (choice != 4)
     {
