@@ -7,10 +7,21 @@
 #include <set>     // for std::set to track unique account numbers
 #include <string>
 #include<windows.h>
+#include<limits>
 
 using namespace std;
 
 class accountUpdate;
+
+void chekup(){
+    if (cin.fail())
+    {
+        cout<<"Invalid Input, Please try again !!"<<endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+    
+}
 
 void loadingScr(){
     system("cls");
@@ -33,7 +44,7 @@ class accountCreation
     long int deposite;
     string name;
     string witness;
-    string mobileNumber;
+    long long mobileNumber;
     long long accountNumber;
     static set<long long> generatedAccountNumbers;
     friend class accountUpdate;
@@ -42,6 +53,35 @@ class accountCreation
     friend class loan;
 
 public:
+
+void validName(string name ){
+    bool validname = false;
+    while (!validname)
+    {
+        int checkValidName = 0;
+        cout<<"ENTER YOUR NAME : ";
+        cin>>name;
+        for (size_t i = 0; i < name.size(); i++)
+        {            
+            if (isalpha(name[i]))
+            {
+               NULL;
+            }
+            else
+            {
+               checkValidName += 1;
+            }
+        }
+
+        if (checkValidName == 0)
+        {
+            validname = true;
+        }
+        else{
+            cout<<"Invalid Input !! "<<endl;
+        }  
+    }
+}
     accountCreation()
     {
         accountNumber = generateAccountNumber(12356280800000LL, 99999999999999LL);
@@ -82,23 +122,22 @@ public:
     void createAccount()
     {
         cout << "Enter the details carefully !!" << endl;
-        cout << "ENTER YOUR NAME : ";
-        cin >> name;
-        cout << "ENTER WITNESS NAME : ";
-        cin >> witness;
+        validName(name);
         bool validNum = false;
         while (!validNum)
         {
             cout << "ENTER MOBILE NUMBER : ";
             cin >> mobileNumber;
 
-            if (mobileNumber.length() == 10)
+            if (to_string(mobileNumber).length() == 10)
             {
                 validNum = true;
             }
             else
             {
                 cout << "Invalid Input !!" << endl;
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
             }
         }
         bool validCode = false;
@@ -114,13 +153,23 @@ public:
             else
             {
                 cout << "Pin must be 4-digit !!" << endl;
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
             }
         }
 
         cout << "ENTER THE AMOUNT : " << endl;
         cin >> deposite;
+        if (cin.fail())
+        {
+            cout<<"Invalid Input, Please try again !!"<<endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+        else{
         loadingScr();
         saveDetails();
+        }
     }
 
     void showDetails()
@@ -131,7 +180,7 @@ public:
         cin >> filepath;
         cout << "Enter Your Security code : " << endl;
         cin >> security;
-        cout << "\n";
+        chekup();
         code(filepath + ".txt");
         loadingScr();
         if (security == securityCode)
@@ -155,7 +204,7 @@ public:
         }
         else
         {
-            cout << "Incorrect code, Try again later !!";
+            cout << "WRONG NAME OR PASSWORD !!";
         }
     }
 
@@ -447,6 +496,12 @@ public:
         {
             cout << "Enter the amount : ";
             cin >> deposite;
+            if (cin.fail())
+            {
+                cout<<"Wrong amount "<<endl;
+            }
+            
+            
             if (deposite < 30000)
             {
                 BalanceCalc(filepath + ".txt");
@@ -785,6 +840,40 @@ public:
             cout << "INVALID LOAN ID !!" << endl;
         }
     }
+
+    void checkloans(){
+        string accHolder;
+        long int secCode;
+        cout<<"Enter your name : ";
+        cin>>accHolder;
+        cout<<"Enter your PIN : "<<endl;
+        cin>>secCode;
+        code(accHolder + ".txt");
+        if (secCode == securityCode)
+        {
+            ifstream check(accHolder + "Loans.txt");
+            string loancheck;
+            loadingScr();
+            if (check.is_open())
+            {
+                cout<<"-----LOAN HISTORY-----"<<endl;
+                while (check.eof() == 0)
+                {
+                    getline(check, loancheck);
+                    cout<<loancheck<<endl;
+                }
+                check.close(); 
+            }
+            else
+            {
+                cout<<"Cannot retrieve at the moment.."<<endl;
+            } 
+        }
+        else
+        {
+            cout<<"WRONG PIN !!"<<endl;
+        }
+    }
 };
 
 class accountManagement : public accountUpdate, public accounDeletion, public loan
@@ -799,13 +888,31 @@ void closeMenu(int var){
     while (var != 1)
     {
         cin>>var;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');  
+        }
+        
         if (var == 1)
         {
             break;
         }
         else
         {
-            cout<<"Invalid input"<<endl;
+            system("cls");
+            cout<<"CANT EVEN PRESS 1 ?"<<endl;
+            string arr[11] = {"R","-", "E","-", "T", "-", "A", "-", "R", "-", "D"};
+            int size = 11;
+            Sleep(400);
+            for (int i = 0; i < size; i++)
+            {
+                cout<<arr[i];
+                Sleep(400);
+            }
+            Sleep(100); 
+            cout<<"\nNOW PRESS IT !!"<<endl;
+
         } 
     }
 }
@@ -964,7 +1071,7 @@ int main()
         {
             int loanPage;
             int loanCheck = 0;
-            while (loanCheck != 3)
+            while (loanCheck != 4)
             {
                 system("cls");
                 cout << "|========================|" <<endl;
@@ -972,7 +1079,8 @@ int main()
                 cout << "|========================|" <<endl;
                 cout << "|1.| Apply for loan      |" << endl;
                 cout << "|2.| Repay Loan          |" << endl;
-                cout << "|3.| Home                |" << endl;
+                cout << "|3.| My Loans            |" << endl;
+                cout << "|4.| Home                |" << endl;
                 cout << "|========================|"<<endl;
                 cout << "|Enter your choice : ";
                 cin >> loanCheck;
@@ -997,6 +1105,15 @@ int main()
                     break;
 
                 case 3:
+                    system("cls");
+                    cout<<"===================="<<endl;
+                    cout<<"     LOAN CHECK     "<<endl;
+                    cout<<"===================="<<endl;
+                    p1.checkloans();
+                    closeMenu(loanPage);
+                    break;
+
+                case 4:
                     break;
 
                 default:
