@@ -1,4 +1,4 @@
-##🏦 Banking Simulation Project
+## 🏦 Banking Simulation Project
 
 Welcome to the Shampi Bank of India — a console-based banking simulation project built in C++, simulating real-world banking operations like account management, money handling, transaction history, and even loan applications
 
@@ -15,7 +15,7 @@ Welcome to the Shampi Bank of India — a console-based banking simulation proje
 
 ---
 
-##🛠 Built With
+## 🛠 Built With
 
 C++ (OOP + File Handling)
 Standard Template Library (STL) - set for account number uniqueness
@@ -32,7 +32,7 @@ Modular Classes - Clean separation of concerns: account, money, loan
 
 ---
 
-##🧠 Concepts Practiced
+## 🧠 Concepts Practiced
 
 Object-Oriented Programming (OOP)
 File Input/Output (I/O)
@@ -43,13 +43,13 @@ Real-world simulation thinking and modular program design
 
 ---
 
-##📜 License
+## 📜 License
 This project is open for educational use.
 Feel free to fork it, modify it, and improve it
 
 ---
 
-##✨ Author
+## ✨ Author
 [Mukund Taneja]
 
 
