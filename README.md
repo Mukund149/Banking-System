@@ -17,10 +17,10 @@ Welcome to the Shampi Bank of India — a console-based banking simulation proje
 
 ## 🛠 Built With
 
-C++ (OOP + File Handling)
-Standard Template Library (STL) - set for account number uniqueness
-Basic Windows API - For simple loading animations
-Modular Classes - Clean separation of concerns: account, money, loan
+- C++ (OOP + File Handling)
+- Standard Template Library (STL) - set for account number uniqueness
+- Basic Windows API - For simple loading animations
+- Modular Classes - Clean separation of concerns: account, money, loan
 
 ---
 
@@ -34,18 +34,18 @@ Modular Classes - Clean separation of concerns: account, money, loan
 
 ## 🧠 Concepts Practiced
 
-Object-Oriented Programming (OOP)
-File Input/Output (I/O)
-Data security handling (PIN validation, name checks)
-Class inheritance (multiple and virtual)
-Error handling and user input validation
-Real-world simulation thinking and modular program design
+- Object-Oriented Programming (OOP)
+- File Input/Output (I/O)
+- Data security handling (PIN validation, name checks)
+- Class inheritance (multiple and virtual)
+- Error handling and user input validation
+- Real-world simulation thinking and modular program design
 
 ---
 
 ## 📜 License
-This project is open for educational use.
-Feel free to fork it, modify it, and improve it
+- This project is open for educational use.
+- Feel free to fork it, modify it, and improve it
 
 ---
 
