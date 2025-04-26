@@ -1,4 +1,5 @@
-🏦 Banking Simulation System
+🏦 Banking Simulation Project
+
 Welcome to the Shampi Bank of India — a console-based banking simulation project built in C++, simulating real-world banking operations like account management, money handling, transaction history, and even loan applications
 
 ---
