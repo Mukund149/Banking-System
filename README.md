@@ -7,7 +7,7 @@ Welcome to the Shampi Bank of India — a console-based banking simulation proje
 ## 📋 Features
 
 - **Account Management**: Create, view, update, and delete accounts
-- **Money Transactions**: Deposit, withdraw, and transfer money
+- **Money Transactions**: Deposit, withdraw, and transfer money between multiple accounts
 - **Transaction History**: View logs of all transactions
 - **Loan Management**: Apply for loans and repay them
 - **Receipts**: Generate receipts for deposits, withdrawals, and transfers
