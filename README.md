@@ -1,55 +1,79 @@
-## 🏦 Banking Simulation Project
+🏦 Banking Simulation — Realistic Console Banking System in C++
 
-Welcome to the Shampi Bank of India — a console-based banking simulation project built in C++, simulating real-world banking operations like account management, money handling, transaction history, and even loan applications
+A fully functional, console-based banking system simulation built with C++, implementing real-world banking operations like account management, transactions, loans, and secure access.
 
----
+This isn’t just a menu-driven toy project — it’s a modular backend simulation with file-based persistence, OOP architecture, and real transaction logic, designed to model how core banking workflows operate.
 
-## 📋 Features
+⚡ Key Features
 
-- **Account Management**: Create, view, update, and delete accounts
-- **Money Transactions**: Deposit, withdraw, and transfer money between multiple accounts
-- **Transaction History**: View logs of all transactions
-- **Loan Management**: Apply for loans and repay them
-- **Receipts**: Generate receipts for deposits, withdrawals, and transfers
-- **Secure Access**: Account operations protected by a 4-digit PIN
+Account Management — Create, view, update, and delete accounts with persistent storage.
 
----
+Secure Access — All accounts protected by 4-digit PIN verification.
 
-## 🛠 Built With
+Money Transactions — Deposit, withdraw, and transfer money between accounts.
 
-- C++ (OOP + File Handling)
-- Standard Template Library (STL) - set for account number uniqueness
-- Basic Windows API - For simple loading animations
-- Modular Classes - Clean separation of concerns: account, money, loan
+Transaction History — Logs of all deposits, withdrawals, and transfers.
 
----
+Loan Management — Apply for loans, track balances, and make repayments.
 
-## 🚀 How to Run
+Receipts — Auto-generate transaction receipts for records.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/banking-simulation.git
+🧠 System Architecture
 
----
+Object-Oriented Design — Separate classes for accounts, money handling, and loans.
 
-## 🧠 Concepts Practiced
+File-Based Storage — Uses C++ file I/O to persist data between sessions.
 
-- Object-Oriented Programming (OOP)
-- File Input/Output (I/O)
-- Data security handling (PIN validation, name checks)
-- Class inheritance (multiple and virtual)
-- Error handling and user input validation
-- Real-world simulation thinking and modular program design
+STL for Data Integrity — set ensures unique account numbers.
 
----
+Basic Windows API — Simple loading animations for better user experience.
 
-## 📜 License
-- This project is open for educational use.
-- Feel free to fork it, modify it, and improve it
+Error Handling & Validation — Protects against invalid input and unauthorized access.
 
----
+🛠 Tech Stack
+Layer	Tech / Tools
+Language	C++
+Paradigm	Object-Oriented Programming
+Storage	File Handling (Persistent Data)
+Libraries	Standard Template Library (STL)
+UI Layer	Console + Windows API animations
+🚀 How to Run
 
-## ✨ Author
-[Mukund Taneja]
+Clone the repository
+
+git clone https://github.com/your-username/banking-simulation.git
 
 
+Compile the program
+
+g++ main.cpp -o banking-system
+
+
+Run the executable
+
+./banking-system
+
+
+🎯 Project Goals
+
+Simulate the core logic of a real banking backend in a console environment.
+
+Reinforce OOP, file I/O, and modular program design principles.
+
+Demonstrate secure data handling in a non-GUI application.
+
+🧠 Concepts Practiced
+
+OOP with inheritance (multiple + virtual)
+
+File persistence and I/O handling
+
+STL containers for unique record management
+
+Data validation and error handling
+
+Real-world simulation thinking
+
+📜 License
+
+MIT — free for educational use and modification.
